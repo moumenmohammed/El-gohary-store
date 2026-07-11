@@ -59,10 +59,15 @@
         <h2>لوحة تحكم المدير 🔐</h2>
         <p>هذا القسم مخصص لصاحب المحل فقط لإضافة وحذف المنتجات.</p>
         
-        <form id="admin-login-form">
-            <input type="password" id="admin-password" placeholder="Enter password mange" required>
-            <button type="submit" class="btn">OK</button>
-        </form>
+       <form id="admin-login-form" autocomplete="off">
+    <input
+        type="password"
+        id="admin-password"
+        placeholder="Enter password"
+        autocomplete="new-password"
+        required>
+    <button type="submit" class="btn">OK</button>
+</form>
 
         <form id="add-product-form" class="hidden">
             <h3>إضافة كاميرا جديدة للمتجر</h3>
