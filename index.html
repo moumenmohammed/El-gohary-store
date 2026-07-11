@@ -7,60 +7,75 @@
 
     <title>El Gohary Stores - متجر الكاميرات</title>
     <style>
- /* ===========================
-   Responsive Navbar
-=========================== */
+/* الحاوية الرئيسية للـ Navbar */
+.navbar-container {
+    width: 100%;
+    background-color: #1a1a1a; /* لون الخلفية الداكن الموضح بالصورة */
+    padding: 15px 10px;
+    box-sizing: border-box;
+    direction: rtl; /* لضمان الترتيب الصحيح من اليمين لليسار */
+}
 
-header {
+/* القائمة التي تجمع العناصر جنبًا إلى جنب */
+.navbar-menu {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: center;  /* لتوسيط العناصر في الشاشات الكبيرة */
     align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 15px;
+    gap: 15px;                /* المسافة بين كل عنصر والآخر */
+    width: 100%;
+    max-width: 1200px;        /* أقصى عرض للقائمة ليظل مريحًا للعين */
+    margin: 0 auto;
 }
 
-header .logo img {
-    width: 70px;
-    height: auto;
-}
-
-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-}
-
-nav a {
-    font-size: 18px;
-    white-space: nowrap;
+/* تنسيق العناصر والروابط نفسها */
+.nav-item {
+    color: #ffffff;
     text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;      /* أهم خاصية: تمنع انقسام الجملة مثل "بع لنا كاميرتك" على سطرين */
+    transition: color 0.3s ease;
 }
 
-/* الموبايل */
-@media (max-width: 768px) {
+/* تمييز روابط الإدارة والسلة بألوانها الخاصة كما في صورتك */
+.admin-link {
+    color: #ff4d4d; /* اللون الأحمر للوحة الإدارة */
+}
 
-    header {
-        flex-direction: column;
-        text-align: center;
-    }
+.cart-link {
+    color: #ff4d4d; /* اللون الأحمر للسلة */
+}
 
-    nav {
-        width: 100%;
-        justify-content: center;
-        gap: 12px;
-    }
+.nav-item:hover {
+    color: #cccccc; /* تأثير عند مرور الماوس */
+}
 
-    nav a {
-        font-size: 16px;
+/* 📱 تظبيط تلقائي لشاشات الموبايل الصغيرة جداً */
+@media (max-width: 600px) {
+    .navbar-menu {
+        gap: 0.1px;            /* تقليل المسافات بين العناصر لتناسب الشاشة الضيقة */
+        justify-content: space-between; /* توزيع العناصر بكامل عرض شاشة الموبايل بالتساوي */
     }
+    
+    .nav-item {
+        font-size: 13px;      /* تصغير حجم الخط قليلاً ليناسب الموبايل دون تشويه */
+    }
+}
 
-    header .logo img {
-        width: 60px;
+/* 🚨 حل أزمة الشاشات المتناهية الصغر (لو الموبايل قديم أو صغير جداً) */
+@media (max-width: 360px) {
+    .navbar-menu {
+        overflow-x: auto;     /* يسمح بسحب القائمة لليمين واليسار بسلاسة بدلاً من خروجها عن الشاشة */
+        justify-content: flex-start;
+        padding-bottom: 5px;
     }
-}</style>
+    /* إخفاء شريط التمرير لرؤية جمالية */
+    .navbar-menu::-webkit-scrollbar {
+        display: none;
+    }
+}
+</style>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -69,13 +84,15 @@ nav a {
         <div class="logo-container">
             <img src="logo.jpeg" alt="El Gohary Stores Logo" class="site-logo">
         </div>
-        <nav>
-            <a href="#home">الرئيسية</a>
-            <a href="#shop">شراء كاميرا</a>
-            <a href="#sell">بع لنا كاميرتك</a>
-            <a href="#admin-zone" class="admin-link">لوحة الإدارة 🔐</a>
-            <a href="#cart" class="cart-btn">السلة (<span id="cart-count">0</span>)</a>
-        </nav>
+       <nav class="navbar-container">
+    <div class="navbar-menu">
+        <a href="#" class="nav-item">الرئيسية</a>
+        <a href="#" class="nav-item">شراء كاميرا</a>
+        <a href="#" class="nav-item">بع لنا كاميرتك</a>
+        <a href="#" class="nav-item admin-link">🔒 لوحة الإدارة</a>
+        <a href="#" class="nav-item cart-link">السلة (<span id="cart-count">0</span>)</a>
+    </div>
+</nav>
     </header>
 
     <section id="home" class="hero">
