@@ -90,7 +90,7 @@ function displayProducts() {
             <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';">
             <div class="product-gallery">${galleryHtml}</div>
             <h3>${product.name}</h3>
-            <p class="price">${Number(product.price || 0).toLocaleString()} $</p>
+            <p class="price">EGP{Number(product.price || 0).toLocaleString()} $</p>
             <button class="add-to-cart-btn">إضافة إلى السلة</button>
             ${isAdminLoggedIn ? `<button class="delete-btn">حذف المنتج 🗑️</button>` : ''}
         `;
