@@ -21,6 +21,7 @@ let currentActiveImgIndex = 0;
 
 const myPhoneNumber = "201033553883";
 const DEFAULT_IMG = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500";
+const CURRENCY = "ج.م"; // 🔽 يمكنك تغيير العملة من هنا بسهولة مستقبلاً
 
 // --- 2. جلب عناصر واجهة المستخدم (DOM Elements) ---
 const productsContainer = document.getElementById('products-container');
@@ -49,7 +50,6 @@ function fileToBase64(file) {
     });
 }
 
-// دالة آمنة لجلب رابط الصورة الأولى للمنتج منعاً لظهور undefined 404
 function getProductMainImg(product) {
     if (product && product.imgs && product.imgs.length > 0 && product.imgs[0]) {
         return product.imgs[0];
@@ -79,7 +79,6 @@ function displayProducts() {
             product.imgs.forEach((imgSrc, index) => {
                 if (!imgSrc) return;
                 const initialOpacity = index === 0 ? 'style="opacity: 1;"' : '';
-                // 🔽 إضافة onerror للصور المصغرة لحمايتها من الكسر
                 galleryHtml += `<img src="${imgSrc}" class="gallery-thumb" ${initialOpacity} data-index="${index}" onclick="changeMainImg(this, '${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';" alt="صورة مصغرة">`;
             });
         }
@@ -90,7 +89,7 @@ function displayProducts() {
             <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';">
             <div class="product-gallery">${galleryHtml}</div>
             <h3>${product.name}</h3>
-            <p class="price">EGP{Number(product.price || 0).toLocaleString()} $</p>
+            <p class="price">${Number(product.price || 0).toLocaleString()} ${CURRENCY}</p>
             <button class="add-to-cart-btn">إضافة إلى السلة</button>
             ${isAdminLoggedIn ? `<button class="delete-btn">حذف المنتج 🗑️</button>` : ''}
         `;
@@ -174,7 +173,6 @@ if (lightboxImg) {
         e.stopPropagation();
         lightboxImg.classList.toggle('zoomed');
     });
-    // حماية صورة الـ Lightbox أيضاً من الكسر
     lightboxImg.addEventListener('error', function() {
         this.src = DEFAULT_IMG;
     });
@@ -234,8 +232,9 @@ function updateCartUI() {
         li.style.alignItems = 'center';
         li.style.marginBottom = '8px';
 
+        // 🔽 تحديث العملة هنا في السلة المنسدلة أو الجانبية
         li.innerHTML = `
-            <span>${item.name} - ${Number(item.price).toLocaleString()} $</span>
+            <span>${item.name} - ${Number(item.price).toLocaleString()} ${CURRENCY}</span>
             <button class="remove-item-btn" style="background:none; border:none; color:red; cursor:pointer;">❌</button>
         `;
 
@@ -259,13 +258,14 @@ if (checkoutBtn) {
         let itemsList = "";
         let total = 0;
         cart.forEach((item, index) => {
-            itemsList += `${index + 1}- ${item.name} (${Number(item.price).toLocaleString()} $)\n`;
+            // 🔽 تحديث العملة هنا للرسالة الصادرة للواتساب
+            itemsList += `${index + 1}- ${item.name} (${Number(item.price).toLocaleString()} ${CURRENCY})\n`;
             total += item.price;
         });
 
         let message = `مرحباً El Gohary Stores، أريد شراء الكاميرات التالية:\n\n`;
         message += `${itemsList}\n`;
-        message += `المجموع الإجمالي: ${total.toLocaleString()} $\n`;
+        message += `المجموع الإجمالي: ${total.toLocaleString()} ${CURRENCY}\n`;
         message += `يرجى تأكيد الطلب.`;
 
         window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
@@ -398,7 +398,8 @@ if (sellForm) {
         sellMessage += `📞 رقم التواصل: ${clientPhone}\n`;
         sellMessage += `📷 الموديل: ${cameraModel}\n`;
         sellMessage += `✨ الحالة: ${cameraStatus}\n`;
-        sellMessage += `💰 السعر المطلوب: ${Number(expectedPrice || 0).toLocaleString()} $\n`;
+        // 🔽 تحديث العملة في رسالة عرض الكاميرا المستعملة
+        sellMessage += `💰 السعر المطلوب: ${Number(expectedPrice || 0).toLocaleString()} ${CURRENCY}\n`;
 
         window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(sellMessage)}`, '_blank');
         sellForm.reset();
