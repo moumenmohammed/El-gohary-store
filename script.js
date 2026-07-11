@@ -10,12 +10,11 @@ let products = [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/3.jpeg"
     ]
   }
-];
-let products = [
+  imgs; [
   {
     id: 1,
-    name: "عدسة كانون 17-50 2.8 سيجما",
-    price: 6750,
+    name: "عدسة كانون مايكرو 100 م 2.8 كسر كسر زيرو بكابين وهود وجراب",
+    price: 33500,
     imgs: [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/4.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/5.jpeg",
