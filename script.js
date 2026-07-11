@@ -1,11 +1,16 @@
 // --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
-let products = [];
-try {
-    products = JSON.parse(localStorage.getItem('elgohary_products')) || [];
-} catch (e) {
-    console.error("خطأ في قراءة المنتجات من localStorage:", e);
-    products = [];
-}
+let products = [
+  {
+    id: 1,
+    name: "عدسة كانون 17-50 2.8 سيجما",
+    price: 6750,
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/1.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/2.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/3.jpeg"
+    ]
+  }
+];
 
 let cart = [];
 try {
