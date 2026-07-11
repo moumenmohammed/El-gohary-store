@@ -1,4 +1,4 @@
-let products = JSON.parse(localStorage.getItem('elgohary_products')) || [];let cart = [];
+let products = JSON.parse(localStorage.getItem('elgohary_products')) || [];
 let isAdminLoggedIn = false;
 
 // متغيرات لتتبع الصورة النشطة حالياً داخل الـ Lightbox للتحكم بالأسهم والزوم
@@ -134,12 +134,22 @@ document.addEventListener('keydown', (e) => {
 // لوحة التحكم وتأكيد الإدارة
 adminLoginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (adminPasswordInput.value === "Amino") {
-        alert("أهلاً بك يا الجوهري! تم تفعيل لوحة الإدارة وزرار الحذف.");
+
+    const password = adminPasswordInput.value.trim();
+
+    // يمسح كلمة المرور بمجرد الضغط على Enter أو OK
+    adminPasswordInput.value = "";
+
+    if (password === "Amino") {
+
         isAdminLoggedIn = true;
-        adminLoginForm.classList.add('hidden');
-        addProductForm.classList.remove('hidden');
+
+        adminLoginForm.classList.add("hidden");
+        addProductForm.classList.remove("hidden");
+
         displayProducts();
+
+        alert("أهلاً بك يا الجوهري 👋");
     } else {
         alert("كلمة المرور خاطئة!");
     }
