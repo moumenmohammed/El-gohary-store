@@ -7,132 +7,59 @@
 
     <title>El Gohary Stores - متجر الكاميرات</title>
     <style>
-        /* موبايل */
-@media (max-width:768px){
+ /* ===========================
+   Responsive Navbar
+=========================== */
 
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    padding:10px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
 }
 
-.logo{
-    width:55px;
-    height:55px;
+header .logo img {
+    width: 70px;
+    height: auto;
 }
 
-nav{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:12px;
-    width:100%;
-    margin-top:10px;
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 }
 
-nav a{
-    font-size:18px;
+nav a {
+    font-size: 18px;
+    white-space: nowrap;
+    text-decoration: none;
 }
 
-.product-card{
-    width:95%;
-    margin:auto;
-}
-
-.main-img{
-    width:100%;
-    height:auto;
-}
-
-.gallery-thumb{
-    width:55px;
-    height:55px;
-}
-
-.whatsapp-float{
-    width:55px;
-    height:55px;
-    left:15px;
-    bottom:15px;
-}
-
-button{
-    width:100%;
-}
-}
-        
-        /* ========================= */
-/* Responsive Mobile Design  */
-/* ========================= */
-
+/* الموبايل */
 @media (max-width: 768px) {
 
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
     nav {
-        display: flex;
-        flex-wrap: wrap;
+        width: 100%;
         justify-content: center;
         gap: 12px;
-        padding: 10px;
     }
 
     nav a {
-        font-size: 17px;
-        margin: 5px;
+        font-size: 16px;
     }
 
-    .logo {
-        width: 70px;
-        height: 70px;
+    header .logo img {
+        width: 60px;
     }
-
-    .hero h1 {
-        font-size: 30px;
-    }
-
-    .hero p {
-        font-size: 18px;
-    }
-
-    .products-container {
-        grid-template-columns: 1fr;
-        padding: 15px;
-    }
-
-    .product-card {
-        width: 100%;
-    }
-
-    .main-img {
-        height: auto;
-    }
-
-    input,
-    select,
-    textarea,
-    button {
-        width: 100%;
-        font-size: 18px;
-    }
-
-    .cart {
-        width: 95%;
-        margin: auto;
-    }
-
-    .lightbox img {
-        width: 95%;
-        height: auto;
-    }
-
-    .whatsapp-float {
-        width: 55px;
-        height: 55px;
-        bottom: 20px;
-        left: 20px;
-    }
-
 }</style>
     <link rel="stylesheet" href="style.css">
 </head>
