@@ -68,7 +68,6 @@ function displayProducts() {
     }
 
     products.forEach(product => {
-        // التحقق من صحة بيانات المنتج الأساسية قبل العرض
         if (!product || !product.id || !product.name) return;
 
         const card = document.createElement('div');
@@ -80,14 +79,15 @@ function displayProducts() {
             product.imgs.forEach((imgSrc, index) => {
                 if (!imgSrc) return;
                 const initialOpacity = index === 0 ? 'style="opacity: 1;"' : '';
-                galleryHtml += `<img src="${imgSrc}" class="gallery-thumb" ${initialOpacity} data-index="${index}" onclick="changeMainImg(this, '${product.id}')" alt="صورة مصغرة">`;
+                // 🔽 إضافة onerror للصور المصغرة لحمايتها من الكسر
+                galleryHtml += `<img src="${imgSrc}" class="gallery-thumb" ${initialOpacity} data-index="${index}" onclick="changeMainImg(this, '${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';" alt="صورة مصغرة">`;
             });
         }
 
         const mainImgSrc = getProductMainImg(product);
 
         card.innerHTML = `
-            <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')">
+            <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';">
             <div class="product-gallery">${galleryHtml}</div>
             <h3>${product.name}</h3>
             <p class="price">${Number(product.price || 0).toLocaleString()} $</p>
@@ -95,7 +95,6 @@ function displayProducts() {
             ${isAdminLoggedIn ? `<button class="delete-btn">حذف المنتج 🗑️</button>` : ''}
         `;
 
-        // تعيين الأحداث بدلاً من onclick المباشر لزيادة الأمان والأداء
         card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
             addToCart(product.id, product.name, product.price);
         });
@@ -170,11 +169,14 @@ function navigateLightbox(direction) {
     }
 }
 
-// تفعيل الأسهم داخل الـ Lightbox
 if (lightboxImg) {
     lightboxImg.addEventListener('dblclick', (e) => {
         e.stopPropagation();
         lightboxImg.classList.toggle('zoomed');
+    });
+    // حماية صورة الـ Lightbox أيضاً من الكسر
+    lightboxImg.addEventListener('error', function() {
+        this.src = DEFAULT_IMG;
     });
 }
 
@@ -185,7 +187,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeZoom();
 });
 
-// إضافة أزرار تنقل للموبايل واللمس في الـ HTML الافتراضي يفضل ربطها برمجياً هنا:
 const prevBtn = document.getElementById('lightbox-prev');
 const nextBtn = document.getElementById('lightbox-next');
 const closeBtn = document.getElementById('lightbox-close');
@@ -282,7 +283,6 @@ if (adminLoginForm) {
         const password = adminPasswordInput.value.trim();
         adminPasswordInput.value = "";
 
-        // ملاحظة أمنية: هذا الفحص فرونت آند فقط ومكشوف برمجياً، تم الإبقاء عليه بناءً على بنيتك الحالية.
         if (password === "Amino") {
             isAdminLoggedIn = true;
             adminLoginForm.classList.add("hidden");
@@ -323,7 +323,6 @@ if (addProductForm) {
         
         let imgUrls = [];
         if (files && files.length > 0) {
-            // فحص تجنب امتلاء مساحة الـ localStorage
             let currentStorageSize = encodeURIComponent(JSON.stringify(localStorage)).length;
             if (currentStorageSize > 4 * 1024 * 1024) { 
                 alert("تنبيه: مساحة التخزين ممتلئة تقريباً! يرجى رفع صور بحجم أصغر.");
@@ -349,8 +348,8 @@ if (addProductForm) {
         try {
             localStorage.setItem('elgohary_products', JSON.stringify(products));
         } catch(err) {
-            alert("فشل حفظ المنتج! يبدو أن حجم الصور كبير جداً وتجاوز مساحة المتصفح המותרة (5MB).");
-            products.pop(); // التراجع عن الإضافة
+            alert("فشل حفظ المنتج! يبدو أن حجم الصور كبير جداً وتجاوز مساحة المتصفح المسموحة (5MB).");
+            products.pop();
             return;
         }
         
@@ -365,11 +364,9 @@ function deleteProduct(id) {
     if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
         const targetId = isNaN(id) ? id : Number(id);
         
-        // 1. إزالة المنتج من مصفوفة المنتجات
         products = products.filter(p => p.id !== targetId);
         localStorage.setItem('elgohary_products', JSON.stringify(products));
         
-        // 2. إصلاح مشكلة السلة: إزالة المنتج من السلة أيضاً إذا تم حذفه من الموقع تماماً
         cart = cart.filter(item => item.id !== targetId);
         
         displayProducts();
