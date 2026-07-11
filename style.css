@@ -140,3 +140,78 @@ nav a:hover, .cart-btn { color: #ff4a5a; }
 .whatsapp-float img { width: 35px; height: 35px; }
 .whatsapp-float:hover { transform: scale(1.1); background-color: #20ba5a; }
 footer { background-color: #0a0a0a; text-align: center; padding: 20px; color: #666; border-top: 1px solid #222; }
+
+
+
+
+/* ========================= */
+/* Responsive Mobile Design  */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        padding: 10px;
+    }
+
+    nav a {
+        font-size: 17px;
+        margin: 5px;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .products-container {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .product-card {
+        width: 100%;
+    }
+
+    .main-img {
+        height: auto;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .cart {
+        width: 95%;
+        margin: auto;
+    }
+
+    .lightbox img {
+        width: 95%;
+        height: auto;
+    }
+
+    .whatsapp-float {
+        width: 55px;
+        height: 55px;
+        bottom: 20px;
+        left: 20px;
+    }
+
+}
