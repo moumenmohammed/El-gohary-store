@@ -11,6 +11,23 @@ let products = [
     ]
   }
 ];
+let products = [
+  {
+    id: 1,
+    name: "عدسة كانون 17-50 2.8 سيجما",
+    price: 6750,
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/4.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/5.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg"
+    
+  }
+];
+
+    ]
+  }
+];
 
 let cart = [];
 try {
