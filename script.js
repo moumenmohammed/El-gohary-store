@@ -1,12 +1,28 @@
-let products = JSON.parse(localStorage.getItem('elgohary_products')) || [];
-let isAdminLoggedIn = false;
+// --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
+let products = [];
+try {
+    products = JSON.parse(localStorage.getItem('elgohary_products')) || [];
+} catch (e) {
+    console.error("خطأ في قراءة المنتجات من localStorage:", e);
+    products = [];
+}
 
-// متغيرات لتتبع الصورة النشطة حالياً داخل الـ Lightbox للتحكم بالأسهم والزوم
+let cart = [];
+try {
+    cart = JSON.parse(localStorage.getItem('elgohary_cart')) || [];
+} catch (e) {
+    console.error("خطأ في قراءة السلة من localStorage:", e);
+    cart = [];
+}
+
+let isAdminLoggedIn = false;
 let currentActiveProductId = null;
 let currentActiveImgIndex = 0;
 
-const myPhoneNumber = "201033553883"; // رقم الواتساب
+const myPhoneNumber = "201033553883";
+const DEFAULT_IMG = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500";
 
+// --- 2. جلب عناصر واجهة المستخدم (DOM Elements) ---
 const productsContainer = document.getElementById('products-container');
 const cartCount = document.getElementById('cart-count');
 const cartItems = document.getElementById('cart-items');
@@ -23,7 +39,7 @@ const sellForm = document.getElementById('sell-form');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 
-// دالة تحويل ملف الصورة إلى صيغة Base64 لتخزينها بشكل دائم في الـ LocalStorage
+// --- 3. الدوال المساعدة (Utility Functions) ---
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -33,180 +49,174 @@ function fileToBase64(file) {
     });
 }
 
-// دالة عرض المنتجات مع بناء المعرض المصغر لكل كاميرا
+// دالة آمنة لجلب رابط الصورة الأولى للمنتج منعاً لظهور undefined 404
+function getProductMainImg(product) {
+    if (product && product.imgs && product.imgs.length > 0 && product.imgs[0]) {
+        return product.imgs[0];
+    }
+    return DEFAULT_IMG;
+}
+
+// --- 4. إدارة عرض المنتجات (Products Rendering) ---
 function displayProducts() {
+    if (!productsContainer) return;
     productsContainer.innerHTML = '';
+
+    if (products.length === 0) {
+        productsContainer.innerHTML = '<p class="empty-msg" style="grid-column: 1/-1; text-align:center; color:#666;">لا توجد منتجات معروضة حالياً.</p>';
+        return;
+    }
+
     products.forEach(product => {
+        // التحقق من صحة بيانات المنتج الأساسية قبل العرض
+        if (!product || !product.id || !product.name) return;
+
         const card = document.createElement('div');
         card.className = 'product-card';
+        card.setAttribute('data-id', product.id);
         
-        // تجهيز الصور المصغرة
         let galleryHtml = '';
-        if(product.imgs && product.imgs.length > 0) {
+        if (product.imgs && Array.isArray(product.imgs)) {
             product.imgs.forEach((imgSrc, index) => {
+                if (!imgSrc) return;
                 const initialOpacity = index === 0 ? 'style="opacity: 1;"' : '';
-                galleryHtml += `<img src="${imgSrc}" class="gallery-thumb" ${initialOpacity} data-index="${index}" onclick="changeMainImg(this, '${product.id}')">`;
+                galleryHtml += `<img src="${imgSrc}" class="gallery-thumb" ${initialOpacity} data-index="${index}" onclick="changeMainImg(this, '${product.id}')" alt="صورة مصغرة">`;
             });
         }
 
+        const mainImgSrc = getProductMainImg(product);
+
         card.innerHTML = `
-            <img src="${product.imgs[0]}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')">
+            <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')">
             <div class="product-gallery">${galleryHtml}</div>
             <h3>${product.name}</h3>
-            <p class="price">${product.price} $</p>
-            <button onclick="addToCart('${product.name}', ${product.price})">إضافة إلى السلة</button>
-            ${isAdminLoggedIn ? `<button class="delete-btn" onclick="deleteProduct(${product.id})">حذف المنتج 🗑️</button>` : ''}
+            <p class="price">${Number(product.price || 0).toLocaleString()} $</p>
+            <button class="add-to-cart-btn">إضافة إلى السلة</button>
+            ${isAdminLoggedIn ? `<button class="delete-btn">حذف المنتج 🗑️</button>` : ''}
         `;
+
+        // تعيين الأحداث بدلاً من onclick المباشر لزيادة الأمان والأداء
+        card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
+            addToCart(product.id, product.name, product.price);
+        });
+
+        if (isAdminLoggedIn) {
+            card.querySelector('.delete-btn').addEventListener('click', () => {
+                deleteProduct(product.id);
+            });
+        }
+
         productsContainer.appendChild(card);
     });
 }
 
-// دالة التبديل بين الصور وتحديد الصورة النشطة
 function changeMainImg(thumb, productId) {
     const mainImg = document.getElementById(`main-img-${productId}`);
-    if (mainImg) {
+    if (mainImg && thumb) {
         mainImg.src = thumb.src;
     }
     
     const card = thumb.closest('.product-card');
-    const thumbs = card.querySelectorAll('.gallery-thumb');
-    thumbs.forEach(t => t.style.opacity = '0.7');
-    thumb.style.opacity = '1';
+    if (card) {
+        const thumbs = card.querySelectorAll('.gallery-thumb');
+        thumbs.forEach(t => t.style.opacity = '0.7');
+        thumb.style.opacity = '1';
+    }
 }
 
-// دالة فتح زووم وتكبير الصورة شاشة كاملة
+// --- 5. نظام الـ Lightbox وعرض الصور الفول سكرين ---
 function openZoom(productId) {
-    const product = products.find(p => p.id == productId || p.id === parseInt(productId));
-    if (!product) return;
+    const targetId = isNaN(productId) ? productId : Number(productId);
+    const product = products.find(p => p.id === targetId);
+    if (!product || !product.imgs || product.imgs.length === 0) return;
 
     currentActiveProductId = product.id;
     
-    const mainImgSrc = document.getElementById(`main-img-${productId}`).src;
+    const mainImgElem = document.getElementById(`main-img-${productId}`);
+    const mainImgSrc = mainImgElem ? mainImgElem.src : product.imgs[0];
+    
     currentActiveImgIndex = product.imgs.indexOf(mainImgSrc);
     if (currentActiveImgIndex === -1) currentActiveImgIndex = 0;
 
-    lightboxImg.classList.remove('zoomed');
-    lightboxImg.src = product.imgs[currentActiveImgIndex];
-    lightbox.classList.remove('hidden');
+    if (lightboxImg && lightbox) {
+        lightboxImg.classList.remove('zoomed');
+        lightboxImg.src = product.imgs[currentActiveImgIndex];
+        lightbox.classList.remove('hidden');
+    }
 }
 
-// دالة غلق الزووم
 function closeZoom() {
-    lightbox.classList.add('hidden');
-    lightboxImg.classList.remove('zoomed');
+    if (lightbox && lightboxImg) {
+        lightbox.classList.add('hidden');
+        lightboxImg.classList.remove('zoomed');
+    }
     currentActiveProductId = null;
 }
 
-// ميزة الضغط مرتين على الصورة لتكبيرها وتصغيرها (Double Click Zoom)
-lightboxImg.addEventListener('dblclick', (e) => {
-    e.stopPropagation(); // يمنع انغلاق الـ Lightbox عند الضغط المزدوج
-    lightboxImg.classList.toggle('zoomed');
-});
-
-// استماع لضغط الأسهم في الكيبورد للتبديل بين الصور
-document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('hidden') || !currentActiveProductId) return;
-
-    const product = products.find(p => p.id === currentActiveProductId);
+function navigateLightbox(direction) {
+    if (!currentActiveProductId) return;
+    const targetId = isNaN(currentActiveProductId) ? currentActiveProductId : Number(currentActiveProductId);
+    const product = products.find(p => p.id === targetId);
     if (!product || !product.imgs || product.imgs.length <= 1) return;
 
-    lightboxImg.classList.remove('zoomed'); // إلغاء الزوم تلقائياً عند الانتقال لصورة أخرى
-
-    if (e.key === 'ArrowRight') {
-        currentActiveImgIndex++;
-        if (currentActiveImgIndex >= product.imgs.length) {
-            currentActiveImgIndex = 0;
+    if (lightboxImg) {
+        lightboxImg.classList.remove('zoomed');
+        if (direction === 'next') {
+            currentActiveImgIndex = (currentActiveImgIndex + 1) % product.imgs.length;
+        } else if (direction === 'prev') {
+            currentActiveImgIndex = (currentActiveImgIndex - 1 + product.imgs.length) % product.imgs.length;
         }
         lightboxImg.src = product.imgs[currentActiveImgIndex];
-    } 
-    else if (e.key === 'ArrowLeft') {
-        currentActiveImgIndex--;
-        if (currentActiveImgIndex < 0) {
-            currentActiveImgIndex = product.imgs.length - 1;
-        }
-        lightboxImg.src = product.imgs[currentActiveImgIndex];
-    }
-    else if (e.key === 'Escape') {
-        closeZoom();
-    }
-});
-
-// لوحة التحكم وتأكيد الإدارة
-adminLoginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const password = adminPasswordInput.value.trim();
-
-    // يمسح كلمة المرور بمجرد الضغط على Enter أو OK
-    adminPasswordInput.value = "";
-
-    if (password === "Amino") {
-
-        isAdminLoggedIn = true;
-
-        adminLoginForm.classList.add("hidden");
-        addProductForm.classList.remove("hidden");
-
-        displayProducts();
-
-        alert("أهلاً بك يا الجوهري 👋");
-    } else {
-        alert("كلمة المرور خاطئة!");
-    }
-});
-
-// إظهار عدد الصور المختارة
-fileInput.addEventListener('change', function() {
-    if (this.files && this.files.length > 0) {
-        fileNamePreview.innerText = `عدد الصور المختارة: ${this.files.length}`;
-    }
-});
-
-// رفع الصور وحفظهم
-addProductForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('prod-name').value;
-    const price = parseInt(document.getElementById('prod-price').value);
-    const files = fileInput.files;
-    
-    let imgUrls = [];
-    if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-            try {
-                const base64String = await fileToBase64(files[i]);
-                imgUrls.push(base64String);
-            } catch (error) {
-                console.error("خطأ في التحويل: ", error);
-            }
-        }
-    } else {
-        imgUrls.push("https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500");
-    }
-
-    products.push({ id: Date.now(), name, price, imgs: imgUrls });
-    localStorage.setItem('elgohary_products', JSON.stringify(products));
-    
-    displayProducts();
-    alert(`تمت إضافة ${name} بنجاح!`);
-    addProductForm.reset();
-    fileNamePreview.innerText = "لم يتم اختيار صور بعد";
-});
-
-function deleteProduct(id) {
-    if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-        products = products.filter(p => p.id !== id);
-        localStorage.setItem('elgohary_products', JSON.stringify(products));
-        displayProducts();
     }
 }
 
-function addToCart(name, price) {
-    cart.push({ name, price });
+// تفعيل الأسهم داخل الـ Lightbox
+if (lightboxImg) {
+    lightboxImg.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        lightboxImg.classList.toggle('zoomed');
+    });
+}
+
+document.addEventListener('keydown', (e) => {
+    if (!lightbox || lightbox.classList.contains('hidden')) return;
+    if (e.key === 'ArrowRight') navigateLightbox('next');
+    if (e.key === 'ArrowLeft') navigateLightbox('prev');
+    if (e.key === 'Escape') closeZoom();
+});
+
+// إضافة أزرار تنقل للموبايل واللمس في الـ HTML الافتراضي يفضل ربطها برمجياً هنا:
+const prevBtn = document.getElementById('lightbox-prev');
+const nextBtn = document.getElementById('lightbox-next');
+const closeBtn = document.getElementById('lightbox-close');
+
+if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox('prev'); });
+if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox('next'); });
+if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeZoom(); });
+if (lightbox) lightbox.addEventListener('click', () => closeZoom());
+
+// --- 6. إدارة سلة المشتريات (Cart Management) ---
+function addToCart(id, name, price) {
+    const parsedPrice = parseFloat(price) || 0;
+    cart.push({ id, name, price: parsedPrice });
+    updateCartUI();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
     updateCartUI();
 }
 
 function updateCartUI() {
-    cartCount.innerText = cart.length;
+    try {
+        localStorage.setItem('elgohary_cart', JSON.stringify(cart));
+    } catch (e) {
+        console.error("فشل حفظ السلة في localStorage:", e);
+    }
+
+    if (cartCount) cartCount.innerText = cart.length;
+    if (!cartItems || !totalPrice) return;
+
     cartItems.innerHTML = '';
     
     if (cart.length === 0) {
@@ -216,57 +226,190 @@ function updateCartUI() {
     }
     
     let total = 0;
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `<span>${item.name}</span> <span>${item.price} $</span>`;
+        li.style.display = 'flex';
+        li.style.justifyContent = 'space-between';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '8px';
+
+        li.innerHTML = `
+            <span>${item.name} - ${Number(item.price).toLocaleString()} $</span>
+            <button class="remove-item-btn" style="background:none; border:none; color:red; cursor:pointer;">❌</button>
+        `;
+
+        li.querySelector('.remove-item-btn').addEventListener('click', () => {
+            removeFromCart(index);
+        });
+
         cartItems.appendChild(li);
         total += item.price;
     });
-    totalPrice.innerText = total;
+    totalPrice.innerText = total.toLocaleString();
 }
 
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length === 0) {
-        alert('السلة فارغة!');
-        return;
-    }
+if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+        if (cart.length === 0) {
+            alert('السلة فارغة!');
+            return;
+        }
 
-    let itemsList = "";
-    let total = 0;
-    cart.forEach((item, index) => {
-        itemsList += `${index + 1}- ${item.name} (${item.price} $)\n`;
-        total += item.price;
+        let itemsList = "";
+        let total = 0;
+        cart.forEach((item, index) => {
+            itemsList += `${index + 1}- ${item.name} (${Number(item.price).toLocaleString()} $)\n`;
+            total += item.price;
+        });
+
+        let message = `مرحباً El Gohary Stores، أريد شراء الكاميرات التالية:\n\n`;
+        message += `${itemsList}\n`;
+        message += `المجموع الإجمالي: ${total.toLocaleString()} $\n`;
+        message += `يرجى تأكيد الطلب.`;
+
+        window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        cart = [];
+        updateCartUI();
     });
+}
 
-    let message = `مرحباً El Gohary Stores، أريد شراء الكاميرات التالية:\n\n`;
-    message += `${itemsList}\n`;
-    message += `المجموع الإجمالي: ${total} $\n`;
-    message += `يرجى تأكيد الطلب.`;
+// --- 7. لوحة التحكم وإدارة المنتجات (Admin Actions) ---
+if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!adminPasswordInput) return;
 
-    window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-    cart = [];
-    updateCartUI();
-});
+        const password = adminPasswordInput.value.trim();
+        adminPasswordInput.value = "";
 
+        // ملاحظة أمنية: هذا الفحص فرونت آند فقط ومكشوف برمجياً، تم الإبقاء عليه بناءً على بنيتك الحالية.
+        if (password === "Amino") {
+            isAdminLoggedIn = true;
+            adminLoginForm.classList.add("hidden");
+            if (addProductForm) addProductForm.classList.remove("hidden");
+            displayProducts();
+            alert("أهلاً بك يا الجوهري 👋");
+        } else {
+            alert("كلمة المرور خاطئة!");
+        }
+    });
+}
+
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        if (fileNamePreview && this.files) {
+            fileNamePreview.innerText = this.files.length > 0 ? `عدد الصور المختارة: ${this.files.length}` : "لم يتم اختيار صور بعد";
+        }
+    });
+}
+
+if (addProductForm) {
+    addProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const nameElem = document.getElementById('prod-name');
+        const priceElem = document.getElementById('prod-price');
+        
+        if (!nameElem || !priceElem || !fileInput) return;
+
+        const name = nameElem.value.trim();
+        const price = parseFloat(priceElem.value) || 0;
+        const files = fileInput.files;
+
+        if (!name || price <= 0) {
+            alert("يرجى إدخال اسم منتج صحيح وسعر أكبر من صفر.");
+            return;
+        }
+        
+        let imgUrls = [];
+        if (files && files.length > 0) {
+            // فحص تجنب امتلاء مساحة الـ localStorage
+            let currentStorageSize = encodeURIComponent(JSON.stringify(localStorage)).length;
+            if (currentStorageSize > 4 * 1024 * 1024) { 
+                alert("تنبيه: مساحة التخزين ممتلئة تقريباً! يرجى رفع صور بحجم أصغر.");
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                try {
+                    const base64String = await fileToBase64(files[i]);
+                    imgUrls.push(base64String);
+                } catch (error) {
+                    console.error("خطأ في معالجة وتحويل الصورة: ", error);
+                }
+            }
+        }
+
+        if (imgUrls.length === 0) {
+            imgUrls.push(DEFAULT_IMG);
+        }
+
+        const newProduct = { id: Date.now(), name, price, imgs: imgUrls };
+        products.push(newProduct);
+        
+        try {
+            localStorage.setItem('elgohary_products', JSON.stringify(products));
+        } catch(err) {
+            alert("فشل حفظ المنتج! يبدو أن حجم الصور كبير جداً وتجاوز مساحة المتصفح המותרة (5MB).");
+            products.pop(); // التراجع عن الإضافة
+            return;
+        }
+        
+        displayProducts();
+        alert(`تمت إضافة ${name} بنجاح!`);
+        addProductForm.reset();
+        if (fileNamePreview) fileNamePreview.innerText = "لم يتم اختيار صور بعد";
+    });
+}
+
+function deleteProduct(id) {
+    if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        const targetId = isNaN(id) ? id : Number(id);
+        
+        // 1. إزالة المنتج من مصفوفة المنتجات
+        products = products.filter(p => p.id !== targetId);
+        localStorage.setItem('elgohary_products', JSON.stringify(products));
+        
+        // 2. إصلاح مشكلة السلة: إزالة المنتج من السلة أيضاً إذا تم حذفه من الموقع تماماً
+        cart = cart.filter(item => item.id !== targetId);
+        
+        displayProducts();
+        updateCartUI();
+    }
+}
+
+// --- 8. نموذج استمارة بيع كاميرا للمتجر ---
 if (sellForm) {
     sellForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const clientName = document.getElementById('client-name').value;
-        const clientPhone = document.getElementById('client-phone').value;
-        const cameraModel = document.getElementById('camera-model').value;
-        const cameraStatus = document.getElementById('camera-status').options[document.getElementById('camera-status').selectedIndex].text;
-        const expectedPrice = document.getElementById('expected-price').value;
+        
+        const clientNameElem = document.getElementById('client-name');
+        const clientPhoneElem = document.getElementById('client-phone');
+        const cameraModelElem = document.getElementById('camera-model');
+        const cameraStatusElem = document.getElementById('camera-status');
+        const expectedPriceElem = document.getElementById('expected-price');
+
+        if (!clientNameElem || !clientPhoneElem || !cameraModelElem || !cameraStatusElem || !expectedPriceElem) return;
+
+        const clientName = clientNameElem.value.trim();
+        const clientPhone = clientPhoneElem.value.trim();
+        const cameraModel = cameraModelElem.value.trim();
+        const cameraStatus = cameraStatusElem.options[cameraStatusElem.selectedIndex].text;
+        const expectedPrice = expectedPriceElem.value.trim();
 
         let sellMessage = `مرحباً El Gohary Stores، أريد عرض كاميرتي للبيع ليكم:\n\n`;
         sellMessage += `👤 الاسم: ${clientName}\n`;
         sellMessage += `📞 رقم التواصل: ${clientPhone}\n`;
         sellMessage += `📷 الموديل: ${cameraModel}\n`;
         sellMessage += `✨ الحالة: ${cameraStatus}\n`;
-        sellMessage += `💰 السعر المطلوب: ${expectedPrice} $\n`;
+        sellMessage += `💰 السعر المطلوب: ${Number(expectedPrice || 0).toLocaleString()} $\n`;
 
         window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(sellMessage)}`, '_blank');
         sellForm.reset();
     });
 }
 
-displayProducts();
+// --- 9. التشغيل الفوري عند إقلاع الصفحة ---
+document.addEventListener('DOMContentLoaded', () => {
+    displayProducts();
+    updateCartUI();
+});
