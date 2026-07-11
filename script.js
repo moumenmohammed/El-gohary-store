@@ -135,7 +135,7 @@ document.addEventListener('keydown', (e) => {
 // لوحة التحكم وتأكيد الإدارة
 adminLoginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (adminPasswordInput.value === "Amino") {
+    if (adminPasswordInput.value === "1234") {
         alert("أهلاً بك يا الجوهري! تم تفعيل لوحة الإدارة وزرار الحذف.");
         isAdminLoggedIn = true;
         adminLoginForm.classList.add('hidden');
