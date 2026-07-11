@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="logo2.jpeg">
+
+    <title>El Gohary Stores - متجر الكاميرات</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo.jpeg" alt="El Gohary Stores Logo" class="site-logo">
+        </div>
+        <nav>
+            <a href="#home">الرئيسية</a>
+            <a href="#shop">شراء كاميرا</a>
+            <a href="#sell">بع لنا كاميرتك</a>
+            <a href="#admin-zone" class="admin-link">لوحة الإدارة 🔐</a>
+            <a href="#cart" class="cart-btn">السلة (<span id="cart-count">0</span>)</a>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>التقط أجمل لحظاتك مع El Gohary Stores</h1>
+            <p>أفضل الكاميرات الاحترافية وعدسات التصوير بأسعار لا تُنافس!</p>
+            <a href="#shop" class="btn">تصفح المنتجات</a>
+        </div>
+    </section>
+
+    <section id="shop" class="products-section">
+        <h2>الكاميرات المتاحة في المتجر</h2>
+        <div class="products-grid" id="products-container">
+            </div>
+    </section>
+
+    <section id="sell" class="sell-section">
+        <h2>عايز تبيع كاميرتك؟</h2>
+        <p>املا البيانات دي وهتفتح شات الواتساب لتأكيد حالتها وسعرها معانا!</p>
+        <form id="sell-form">
+            <input type="text" id="client-name" placeholder="اسمك الثنائي" required>
+            <input type="tel" id="client-phone" placeholder="رقم الهاتف (واتساب)" required>
+            <input type="text" id="camera-model" placeholder="نوع وموديل الكاميرا" required>
+            <select id="camera-status" required>
+                <option value="">حالة الكاميرا...</option>
+                <option value="new">كسر زيرو / ممتازة</option>
+                <option value="good">مستعملة بحالة جيدة</option>
+                <option value="used">مستعملة بها عيوب بسيطة</option>
+            </select>
+            <input type="number" id="expected-price" placeholder="السعر المطلوب ($)" required>
+            <button type="submit" class="btn">إرسال الطلب عبر الواتساب 💬</button>
+        </form>
+    </section>
+
+    <section id="admin-zone" class="admin-section">
+        <h2>لوحة تحكم المدير 🔐</h2>
+        <p>هذا القسم مخصص لصاحب المحل فقط لإضافة وحذف المنتجات.</p>
+        
+        <form id="admin-login-form">
+            <input type="password" id="admin-password" placeholder="أدخل كلمة مرور المدير" required>
+            <button type="submit" class="btn">دخول</button>
+        </form>
+
+        <form id="add-product-form" class="hidden">
+            <h3>إضافة كاميرا جديدة للمتجر</h3>
+            <input type="text" id="prod-name" placeholder="اسم الكاميرا" required>
+            <input type="number" id="prod-price" placeholder="السعر ($)" required>
+            
+            <div class="file-upload-wrapper">
+                <label for="prod-img-file" class="custom-file-upload">
+                    📷 اختر صور الكاميرا من جهازك (يمكنك اختيار أكثر من صورة)
+                </label>
+                <input type="file" id="prod-img-file" accept="image/*" multiple required>
+                <span id="file-name-preview">لم يتم اختيار صور بعد</span>
+            </div>
+
+            <button type="submit" class="btn">نشر المنتج في المتجر</button>
+        </form>
+    </section>
+
+    <section id="cart" class="cart-section">
+        <h2>سلة المشتريات 🛒</h2>
+        <div class="cart-container">
+            <ul id="cart-items">
+                <p class="empty-msg">السلة فارغة حالياً.</p>
+            </ul>
+            <div class="cart-total">
+                <h3>المجموع الإجمالي: <span id="total-price">0</span> EGP</h3>
+                <button id="checkout-btn" class="btn">إتمام الشراء عبر الواتساب 💬</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="lightbox" class="lightbox hidden" onclick="closeZoom()">
+        <span class="close-zoom">&times;</span>
+        <img id="lightbox-img" src="" alt="Zoomed Image">
+    </div>
+
+    <a href="https://wa.me/201033553883" class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>
