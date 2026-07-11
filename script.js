@@ -1,5 +1,4 @@
-let products = JSON.parse(localStorage.getItem('elgohary_products')) || defaultProducts;
-let cart = [];
+let products = JSON.parse(localStorage.getItem('elgohary_products')) || [];let cart = [];
 let isAdminLoggedIn = false;
 
 // متغيرات لتتبع الصورة النشطة حالياً داخل الـ Lightbox للتحكم بالأسهم والزوم
