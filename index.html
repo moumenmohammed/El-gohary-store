@@ -24,7 +24,7 @@
     align-items: center;
     gap: 15px;                /* المسافة بين كل عنصر والآخر */
     width: 100%;
-    max-width: 1200px;        /* أقصى عرض للقائمة ليظل مريحًا للعين */
+    max-width: 1222px;        /* أقصى عرض للقائمة ليظل مريحًا للعين */
     margin: 0 auto;
 }
 
@@ -32,7 +32,7 @@
 .nav-item {
     color: #ffffff;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     white-space: nowrap;      /* أهم خاصية: تمنع انقسام الجملة مثل "بع لنا كاميرتك" على سطرين */
     transition: color 0.3s ease;
@@ -40,11 +40,11 @@
 
 /* تمييز روابط الإدارة والسلة بألوانها الخاصة كما في صورتك */
 .admin-link {
-    color: #ff4d4d; /* اللون الأحمر للوحة الإدارة */
+    color: #ffffff; /* اللون الأحمر للوحة الإدارة */
 }
 
 .cart-link {
-    color: #ff4d4d; /* اللون الأحمر للسلة */
+    color: #ffffff; /* اللون الأحمر للسلة */
 }
 
 .nav-item:hover {
@@ -54,7 +54,7 @@
 /* 📱 تظبيط تلقائي لشاشات الموبايل الصغيرة جداً */
 @media (max-width: 600px) {
     .navbar-menu {
-        gap: 0.1px;            /* تقليل المسافات بين العناصر لتناسب الشاشة الضيقة */
+        gap: 20px;            /* تقليل المسافات بين العناصر لتناسب الشاشة الضيقة */
         justify-content: space-between; /* توزيع العناصر بكامل عرض شاشة الموبايل بالتساوي */
     }
     
@@ -68,7 +68,7 @@
     .navbar-menu {
         overflow-x: auto;     /* يسمح بسحب القائمة لليمين واليسار بسلاسة بدلاً من خروجها عن الشاشة */
         justify-content: flex-start;
-        padding-bottom: 5px;
+        padding-bottom: 7px;
     }
     /* إخفاء شريط التمرير لرؤية جمالية */
     .navbar-menu::-webkit-scrollbar {
@@ -89,8 +89,9 @@
         <a href="#" class="nav-item">الرئيسية</a>
         <a href="#" class="nav-item">شراء كاميرا</a>
         <a href="#" class="nav-item">بع لنا كاميرتك</a>
+         <a href="#" class="nav-item cart-link">السلة (<span id="cart-count">0</span>)</a>
         <a href="#" class="nav-item admin-link">🔒 لوحة الإدارة</a>
-        <a href="#" class="nav-item cart-link">السلة (<span id="cart-count">0</span>)</a>
+       
     </div>
 </nav>
     </header>
