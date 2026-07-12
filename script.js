@@ -299,7 +299,7 @@ if (adminLoginForm) {
         const password = adminPasswordInput.value.trim();
         adminPasswordInput.value = "";
 
-        if (password === "M0100#") {
+        if (password === "Amino") {
             isAdminLoggedIn = true;
             adminLoginForm.classList.add("hidden");
             if (addProductForm) addProductForm.classList.remove("hidden");
