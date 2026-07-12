@@ -28,12 +28,19 @@ let products = [
     name: "نيكون 5200 شتر 4 ك زيرو بعدسة 18-55 وشنطة / نيكون 5100 شتر 9 ك بعدسة 18-55 وشنطة",
     price: "5200: 8999 جنيه | 5100: 9999 جنيه",
     imgs: [
-      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/8.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/9.jpeg",
-      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/12.jpeg"
+    ]
+  }
+    {
+    id: 3,
+    name: " نيكون 5100 شتر 9 ك بعدسة 18-55 وشنطة",
+    price: " 8999 جنيه |",
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg"
     ]
   }
 ];
