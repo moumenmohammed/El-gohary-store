@@ -1,5 +1,5 @@
 // 🔴 1. حط هنا المفتاح اللي نسخته من موقع Imgbb بين علامات التنصيص
-const IMGBB_API_KEY = "حط_المفتاح_بتاعك_هنا"; 
+const IMGBB_API_KEY = "5a0971aaec3caddc2b142a3cf663b794"; 
 
 // --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
 let products = [
