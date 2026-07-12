@@ -21,6 +21,17 @@ let products = [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg"
     ]
+  },
+  {
+    id: 2,
+    name: "عدسة كانون مايكرو 100 م 2.8 كسر زيرو بكابين وهود وجراب",
+    price: 33500,
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/8.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/9.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg"
+    ]
   }
 ];
 
