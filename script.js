@@ -1,5 +1,5 @@
 // 🔴 1. حط هنا المفتاح اللي نسخته من موقع Imgbb بين علامات التنصيص
-const IMGBB_API_KEY = "5a0971aaec3caddc2b142a3cf663b794"; 
+const IMGBB_API_KEY = "5a0971aaec3caddc2b142a3cf663b794";
 
 // --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
 let products = [
@@ -20,26 +20,22 @@ let products = [
     imgs: [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/4.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/5.jpeg",
-      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg",
-     
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg"
+    ]
+  },
+  {
+    id: 3,
+    name: "نيكون 5200 شتر 4 ك زيرو بعدسة 18-55 وشنطة / نيكون 5100 شتر 9 ك بعدسة 18-55 وشنطة",
+    price: "5200: 8999 جنيه | 5100: 9999 جنيه",
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/8.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/9.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/12.jpeg"
     ]
   }
-  {
-  id: 3,
-  name: "نيكون 5200 شتر 4 ك زيرو 58-55 وشنطة    /     ونيكون 5100 شتر9 ك ب18-55 وشنطة",
-  price: 8999    /    9999,
-  imgs: [
-     "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
-      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/8.jpeg",
-         "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/9.jpeg"
-             "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg"
-           "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg"
-           "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/12.jpeg"
-
-
-
-  ]
-},
 ];
 
 let cart = [];
