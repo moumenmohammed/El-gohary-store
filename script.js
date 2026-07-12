@@ -32,6 +32,15 @@ try {
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg"
     ]
   }
+  {
+    id: 3,
+    name: "نيكون 5100 شتر9 ك ب18-55 وشنطة",
+    price: 8999,
+    imgs: [
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg"
+    ]
+  },
 ];
 
 let cart = [];
