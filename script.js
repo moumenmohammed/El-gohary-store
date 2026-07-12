@@ -1,17 +1,6 @@
-// 🔴 1. حط هنا المفتاح اللي نسخته من موقع Imgbb بين علامات التنصيص
 const IMGBB_API_KEY = "5a0971aaec3caddc2b142a3cf663b794";
 
-// --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
 let products = [
-  // تحميل المنتجات المحفوظة إن وجدت
-try {
-    const savedProducts = localStorage.getItem("elgohary_products");
-    if (savedProducts) {
-        products = JSON.parse(savedProducts);
-    }
-} catch (e) {
-    console.error("خطأ في تحميل المنتجات", e);
-}
   {
     id: 1,
     name: "عدسة كانون 17-50 2.8 سيجما",
@@ -31,18 +20,26 @@ try {
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/5.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/6.jpeg"
     ]
-  }
+  },
   {
     id: 3,
-    name: "نيكون 5100 شتر9 ك ب18-55 وشنطة",
+    name: "نيكون 5100 شتر 9 ك بعدسة 18-55 وشنطة",
     price: 8999,
     imgs: [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg"
     ]
-  },
+  }
 ];
 
+try {
+    const savedProducts = localStorage.getItem("elgohary_products");
+    if (savedProducts) {
+        products = JSON.parse(savedProducts);
+    }
+} catch (e) {
+    console.error("خطأ في تحميل المنتجات", e);
+}
 let cart = [];
 try {
     cart = JSON.parse(localStorage.getItem('elgohary_cart')) || [];
