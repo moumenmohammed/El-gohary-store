@@ -3,6 +3,15 @@ const IMGBB_API_KEY = "5a0971aaec3caddc2b142a3cf663b794";
 
 // --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
 let products = [
+  // تحميل المنتجات المحفوظة إن وجدت
+try {
+    const savedProducts = localStorage.getItem("elgohary_products");
+    if (savedProducts) {
+        products = JSON.parse(savedProducts);
+    }
+} catch (e) {
+    console.error("خطأ في تحميل المنتجات", e);
+}
   {
     id: 1,
     name: "عدسة كانون 17-50 2.8 سيجما",
