@@ -1,3 +1,6 @@
+// 🔴 1. حط هنا المفتاح اللي نسخته من موقع Imgbb بين علامات التنصيص
+const IMGBB_API_KEY = "حط_المفتاح_بتاعك_هنا"; 
+
 // --- 1. التهيئة وإدارة التخزين المحلي (Local Storage) ---
 let products = [
   {
@@ -10,7 +13,6 @@ let products = [
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/3.jpeg"
     ]
   },
-
   {
     id: 2,
     name: "عدسة كانون مايكرو 100 م 2.8 كسر زيرو بكابين وهود وجراب",
@@ -57,14 +59,29 @@ const sellForm = document.getElementById('sell-form');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 
-// --- 3. الدوال المساعدة (Utility Functions) ---
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+
+// --- 3. الدوال المساعدة الجديدة لرفع الصور إلى Imgbb مجاناً ---
+async function uploadImageToImgbb(file) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            return result.data.url; // الرابط العالمي المجاني للصورة
+        } else {
+            throw new Error(result.error.message);
+        }
+    } catch (error) {
+        console.error("خطأ في رفع الصورة لـ Imgbb:", error);
+        throw error;
+    }
 }
 
 function getProductMainImg(product) {
@@ -73,6 +90,7 @@ function getProductMainImg(product) {
     }
     return DEFAULT_IMG;
 }
+
 
 // --- 4. إدارة عرض المنتجات (Products Rendering) ---
 function displayProducts() {
@@ -102,7 +120,6 @@ function displayProducts() {
 
         const mainImgSrc = getProductMainImg(product);
 
-        // 🔽 تم إصلاح علامات الباك-تك هنا ليعمل حقل السعر تلقائياً
         card.innerHTML = `
             <img src="${mainImgSrc}" alt="${product.name}" class="main-img" id="main-img-${product.id}" onclick="openZoom('${product.id}')" onerror="this.onerror=null; this.src='${DEFAULT_IMG}';">
             <div class="product-gallery">${galleryHtml}</div>
@@ -161,6 +178,7 @@ function openZoom(productId) {
     }
 }
 
+// دالة إغلاق الزووم
 function closeZoom() {
     if (lightbox && lightboxImg) {
         lightbox.classList.add('hidden');
@@ -290,7 +308,7 @@ if (checkoutBtn) {
     });
 }
 
-// --- 7. لوحة التحكم وإدارة المنتجات (Admin Actions) ---
+// --- 7. لوحة التحكم وإدارة المنتجات (Admin Actions) المعدلة لـ Imgbb ---
 if (adminLoginForm) {
     adminLoginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -339,17 +357,14 @@ if (addProductForm) {
         
         let imgUrls = [];
         if (files && files.length > 0) {
-            let currentStorageSize = encodeURIComponent(JSON.stringify(localStorage)).length;
-            if (currentStorageSize > 4 * 1024 * 1024) { 
-                alert("تنبيه: مساحة التخزين ممتلئة تقريباً! يرجى رفع صور بحجم أصغر.");
-            }
-
+            fileNamePreview.innerText = "جاري رفع الصور مجاناً... برجاء الانتظار ⏳";
+            
             for (let i = 0; i < files.length; i++) {
                 try {
-                    const base64String = await fileToBase64(files[i]);
-                    imgUrls.push(base64String);
+                    const cloudUrl = await uploadImageToImgbb(files[i]);
+                    imgUrls.push(cloudUrl);
                 } catch (error) {
-                    console.error("خطأ في معالجة وتحويل الصورة: ", error);
+                    alert(`فشل رفع الصورة رقم ${i + 1}: ${error.message}`);
                 }
             }
         }
@@ -364,13 +379,11 @@ if (addProductForm) {
         try {
             localStorage.setItem('elgohary_products', JSON.stringify(products));
         } catch(err) {
-            alert("فشل حفظ المنتج! يبدو أن حجم الصور كبير جداً وتجاوز مساحة المتصفح المسموحة (5MB).");
-            products.pop();
-            return;
+            console.error(err);
         }
         
         displayProducts();
-        alert(`تمت إضافة ${name} بنجاح!`);
+        alert(`تمت إضافة ${name} بنجاح! والصور هتظهر للناس كلها دلوقتي 🎉`);
         addProductForm.reset();
         if (fileNamePreview) fileNamePreview.innerText = "لم يتم اختيار صور بعد";
     });
