@@ -23,16 +23,18 @@ let products = [
     ]
   },
   {
-    id: 2,
+    id: 3,
     name: "نيكون 5200 شتر 4 ك زيرو 58-55 وشنطة ونيكون 5100 شتر9 ك ب18-55 وشنطة
 ",
     price: 9999,
-    imgs: [      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
-
+    imgs: [      
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/7.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/8.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/9.jpeg",
       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/10.jpeg",
-      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg"
+      "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/11.jpeg",
+       "https://raw.githubusercontent.com/moumenmohammed/El-gohary-store/main/12.jpeg"
+
     ]
   }
 ];
