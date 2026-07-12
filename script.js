@@ -41,12 +41,7 @@ try {
     console.error("خطأ في تحميل المنتجات", e);
 }
 let cart = [];
-try {
-    cart = JSON.parse(localStorage.getItem('elgohary_cart')) || [];
-} catch (e) {
-    console.error("خطأ في قراءة السلة من localStorage:", e);
-    cart = [];
-}
+
 
 let isAdminLoggedIn = false;
 let currentActiveProductId = null;
